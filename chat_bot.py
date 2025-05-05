@@ -1,26 +1,25 @@
 import openai
 
-client = openai.OpenAI(api_key= 'sua_chave_aqui')
+client = openai.OpenAI(api_key='sua_chave_aqui')
 
-def enviar_conversa (mensagem, lista_mensagens=[]):
-
-    lista_mensagens.append(
-        {'role':'user', 'content': mensagem}
-    )
+def enviar_conversa(mensagem, lista_mensagens):
+    lista_mensagens.append({'role': 'user', 'content': mensagem})
 
     resposta = client.chat.completions.create(
-        model= 'gpt-3.5-turbo',
-        messages= lista_mensagens,
+        model='gpt-3.5-turbo',
+        messages=lista_mensagens,
     )
-    return resposta.choices[0].message.content
+    conteudo_resposta = resposta.choices[0].message.content
+    lista_mensagens.append({'role': 'assistant', 'content': conteudo_resposta})
+
+    return conteudo_resposta
 
 lista_mensagens = []
 while True:
-    texto = input ("Digite sua mensagem:")
+    texto = input("Digite sua mensagem: ")
 
-    if texto == 'sair':
+    if texto.lower() == 'sair':  # <-- corrigido aqui
         break
     else:
         resposta = enviar_conversa(texto, lista_mensagens)
-        lista_mensagens.append({'role':'user', 'content': resposta})
-        print ('Chatbot:', resposta)
+        print('Chatbot:', resposta)
